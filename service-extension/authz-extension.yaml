@@ -1,0 +1,12 @@
+apiVersion: networkservices.googleapis.com/v1
+kind: AuthzExtension
+metadata:
+  name: enterprise-token-injector-ext
+  namespace: us-central1
+spec:
+  loadBalancingScheme: INTERNAL_MANAGED
+  wireFormat: EXT_PROC_GRPC
+  # Points to the internal Backend Service hosting the ext_proc gRPC container:
+  service: "https://www.googleapis.com/compute/v1/projects/${PROJECT_ID}/regions/us-central1/backendServices/enterprise-extproc-backend"
+  timeout: 1.5s
+  failOpen: false       # Zero-trust: Fail-closed if token injector is unreachable

@@ -1,0 +1,15 @@
+{
+  "name": "mock-enterprise-mcp-server",
+  "version": "1.0.0",
+  "description": "Mock Enterprise Proxy and MCP Server for Gemini Enterprise 2-Legged Auth Testing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "axios": "^1.7.2",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0"
+  }
+}

@@ -1,0 +1,5 @@
+grpcio==1.81.1
+grpcio-status==1.81.1
+protobuf==6.33.6
+xds-protos==1.83.1
+google-cloud-secret-manager>=2.18.0

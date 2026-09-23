@@ -1,0 +1,28 @@
+# Python
+venv/
+*.pyc
+__pycache__/
+*.resolved.yaml
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & Credentials
+.env
+*.key
+*.pem
+*.token
+
+# OS & Editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
