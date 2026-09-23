@@ -1,22 +1,21 @@
-apiVersion: networkservices.googleapis.com/v1
+apiVersion: networksecurity.googleapis.com/v1
 kind: AuthzPolicy
 metadata:
   name: enterprise-token-injector-policy
   namespace: us-central1
 spec:
   action: CUSTOM
+  policyProfile: REQUEST_AUTHZ
   customProvider:
     authzExtension:
       resources:
-        - "projects/${PROJECT_NUMBER}/locations/us-central1/authzExtensions/enterprise-token-injector-ext"
+        - "projects/${PROJECT_NUMBER}/locations/us-central1/authzExtensions/enterprise-extproc-ext"
   target:
     resources:
-      # Attached to your Agent Gateway
       - "projects/${PROJECT_NUMBER}/locations/us-central1/agentGateways/${AGENT_GATEWAY_NAME}"
   httpRules:
     - to:
         operations:
           - paths:
               - prefix: /
-      # Intercept outbound HTTP/MCP JSON-RPC calls and ignore internal gRPC mesh traffic
       when: "!request.headers['content-type'].startsWith('application/grpc')"
