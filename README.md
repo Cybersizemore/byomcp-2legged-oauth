@@ -11,7 +11,7 @@ A production-grade architectural pattern and reference implementation for integr
 
 ## 🎯 Executive Problem & Objectives
 
-Enterprises in highly regulated sectors (e.g., financial services, quantitative trading, healthcare) often enforce a non-negotiable security requirement:
+Enterprises in highly regulated sectors often enforce a non-negotiable security requirement:
 
 > **Zero Third-Party Secret Residency:** No customer OAuth `client_secret`s, private keys, or persistent on-premises user session tokens may ever be stored or persisted inside external SaaS / Cloud platforms (including Google Cloud / Gemini Enterprise).
 
