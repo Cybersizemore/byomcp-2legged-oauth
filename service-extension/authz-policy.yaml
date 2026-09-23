@@ -18,4 +18,3 @@ spec:
         operations:
           - paths:
               - prefix: /
-      when: "!request.headers['content-type'].startsWith('application/grpc')"
