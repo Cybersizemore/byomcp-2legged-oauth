@@ -114,48 +114,45 @@ app.post('/mcp', async (req, res) => {
   if (method === 'tools/call') {
     console.log(`[Enterprise Proxy] Handling 'tools/call' for tool: '${params ? params.name : "unknown"}'`);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.warn(`[Enterprise Proxy] ❌ REJECTED: Missing or malformed Authorization header!`);
-      return res.status(401).json({
-        jsonrpc: '2.0',
-        id,
-        error: {
-          code: -32000,
-          message: 'Unauthorized: Missing Authorization header with Google OIDC token.',
-        },
-      });
+    let callerEmail = 'private-agent-gateway-network-attachment';
+    let simulatedOnPremTicket = `enterprise-onprem-ticket-${crypto.randomBytes(8).toString('hex')}`;
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      let decodedPayload = null;
+
+      // Decode and inspect JWT
+      try {
+        decodedPayload = jwt.decode(token);
+        console.log(`[Enterprise Proxy] 🔍 Inspected JWT Payload:`);
+        console.log(`   - Issuer:  ${decodedPayload.iss}`);
+        console.log(`   - Email:   ${decodedPayload.email}`);
+        console.log(`   - Aud:     ${decodedPayload.aud}`);
+        console.log(`   - Exp:     ${new Date(decodedPayload.exp * 1000).toISOString()}`);
+        callerEmail = decodedPayload.email || decodedPayload.sub || callerEmail;
+      } catch (err) {
+        console.warn(`[Enterprise Proxy] Failed to decode JWT: ${err.message}`);
+      }
+
+      // -------------------------------------------------------------------------
+      // SIMULATED ENTERPRISE TOKEN EXCHANGE
+      // -------------------------------------------------------------------------
+      console.log(`\n------------------------------------------------------`);
+      console.log(`🔐 [Enterprise Token Exchange] STARTING EXCHANGE FOR CALLER: ${callerEmail}`);
+      console.log(`   1. Validated Google Cryptographic Assertion (iss: ${decodedPayload ? decodedPayload.iss : "N/A"})`);
+      console.log(`   2. Calling Enterprise Internal STS (RFC 8693 simulation)...`);
+      console.log(`   ✅ STS Exchange Successful!`);
+      console.log(`   Generated On-Prem Session Ticket: ${simulatedOnPremTicket}`);
+      console.log(`   3. Token scope: desk.read, marketdata.access (User/Service: ${callerEmail})`);
+      console.log(`------------------------------------------------------\n`);
+    } else {
+      console.log(`\n------------------------------------------------------`);
+      console.log(`🔒 [Private Connectivity] Request received privately via Agent Gateway Network Attachment.`);
+      console.log(`   - Ingress Mode: Private VPC Internal-Only`);
+      console.log(`   - Authenticated Boundary: psc-na-us-central1-agw -> vnet-ge`);
+      console.log(`   - Identity Context: ${callerEmail}`);
+      console.log(`------------------------------------------------------\n`);
     }
-
-    const token = authHeader.split(' ')[1];
-    let decodedPayload = null;
-
-    // Decode and inspect JWT
-    try {
-      decodedPayload = jwt.decode(token);
-      console.log(`[Enterprise Proxy] 🔍 Inspected JWT Payload:`);
-      console.log(`   - Issuer:  ${decodedPayload.iss}`);
-      console.log(`   - Email:   ${decodedPayload.email}`);
-      console.log(`   - Aud:     ${decodedPayload.aud}`);
-      console.log(`   - Exp:     ${new Date(decodedPayload.exp * 1000).toISOString()}`);
-    } catch (err) {
-      console.warn(`[Enterprise Proxy] Failed to decode JWT: ${err.message}`);
-    }
-
-    // -------------------------------------------------------------------------
-    // SIMULATED ENTERPRISE TOKEN EXCHANGE
-    // -------------------------------------------------------------------------
-    const callerEmail = decodedPayload ? (decodedPayload.email || decodedPayload.sub) : 'unknown-caller';
-    console.log(`\n------------------------------------------------------`);
-    console.log(`🔐 [Enterprise Token Exchange] STARTING EXCHANGE FOR CALLER: ${callerEmail}`);
-    console.log(`   1. Validated Google Cryptographic Assertion (iss: ${decodedPayload ? decodedPayload.iss : "N/A"})`);
-    console.log(`   2. Calling Enterprise Internal STS (RFC 8693 simulation)...`);
-    
-    // Generate simulated short-lived on-prem Enterprise session ticket
-    const simulatedOnPremTicket = `enterprise-onprem-ticket-${crypto.randomBytes(8).toString('hex')}`;
-    console.log(`   ✅ STS Exchange Successful!`);
-    console.log(`   Generated On-Prem Session Ticket: ${simulatedOnPremTicket}`);
-    console.log(`   3. Token scope: desk.read, marketdata.access (User/Service: ${callerEmail})`);
-    console.log(`------------------------------------------------------\n`);
 
     // Execute the Tool
     const toolName = params.name;
