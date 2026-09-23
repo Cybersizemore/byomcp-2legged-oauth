@@ -116,11 +116,30 @@ echo "Templating Authz YAML resources..."
 envsubst < authz-extension.yaml > authz-extension.resolved.yaml
 envsubst < authz-policy.yaml > authz-policy.resolved.yaml
 
-echo "Applying AuthzExtension..."
-gcloud network-services authz-extensions import enterprise-token-injector-ext \
-    --location="${REGION}" \
-    --source=authz-extension.resolved.yaml \
-    --project="${PROJECT_ID}"
+AUTHZ_EXT_NAME="enterprise-extproc-ext"
+echo "Applying AuthzExtension (${AUTHZ_EXT_NAME})..."
+if curl -s -f -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    "https://networkservices.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/authzExtensions/${AUTHZ_EXT_NAME}" >/dev/null 2>&1; then
+    echo "Updating existing AuthzExtension..."
+    curl -s -X PATCH -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+        -H "Content-Type: application/json" \
+        "https://networkservices.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/authzExtensions/${AUTHZ_EXT_NAME}?updateMask=service,authority,timeout" \
+        -d "{
+            \"service\": \"enterprise-extproc-4r5j2evtkq-uc.a.run.app\",
+            \"authority\": \"enterprise-extproc-4r5j2evtkq-uc.a.run.app\",
+            \"timeout\": \"1.5s\"
+        }" >/dev/null
+else
+    echo "Creating new AuthzExtension..."
+    curl -s -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+        -H "Content-Type: application/json" \
+        "https://networkservices.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/authzExtensions?authzExtensionId=${AUTHZ_EXT_NAME}" \
+        -d "{
+            \"service\": \"enterprise-extproc-4r5j2evtkq-uc.a.run.app\",
+            \"authority\": \"enterprise-extproc-4r5j2evtkq-uc.a.run.app\",
+            \"timeout\": \"1.5s\"
+        }" >/dev/null
+fi
 
 echo "Applying AuthzPolicy to Agent Gateway..."
 gcloud network-security authz-policies import enterprise-token-injector-policy \
