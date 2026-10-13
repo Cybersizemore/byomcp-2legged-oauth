@@ -1,0 +1,14 @@
+{
+  "name": "byomcp-2legged-okta-proxy",
+  "version": "2.0.0",
+  "description": "Sample Edge MCP Auth Proxy: Verifies Google Service Extension OIDC JWT, performs 2-legged OAuth token exchange with Okta, and calls out to separate Okta-gated Cloud Run MCP server (byomcp-2legged-shopping-mcp)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0"
+  }
+}
