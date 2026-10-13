@@ -24,9 +24,10 @@ const OKTA_ISSUER =
 const OKTA_AUDIENCE = process.env.OKTA_AUDIENCE || 'api://enterprise-mcp';
 const REQUIRED_SCOPE = process.env.REQUIRED_SCOPE || 'mcp.tools';
 
-// JWKS client fetches public signing keys directly from Okta's /v1/keys endpoint
+// JWKS client fetches public signing keys from the OAuth Provider's JWKS endpoint (defaults to Okta /v1/keys)
+const JWKS_URI = process.env.JWKS_URI || `${OKTA_ISSUER}/v1/keys`;
 const client = jwksClient({
-  jwksUri: `${OKTA_ISSUER}/v1/keys`,
+  jwksUri: JWKS_URI,
   cache: true,
   rateLimit: true,
   jwksRequestsPerMinute: 10,
@@ -52,11 +53,16 @@ function verifyOktaToken(token) {
       },
       (err, decoded) => {
         if (err) return reject(err);
-        const scopes = Array.isArray(decoded.scp) ? decoded.scp : [];
+        // Support both Okta/Entra 'scp' array and standard OAuth 'scope' space-delimited string
+        const scopes = Array.isArray(decoded.scp)
+          ? decoded.scp
+          : typeof decoded.scope === 'string'
+          ? decoded.scope.split(' ')
+          : [];
         if (REQUIRED_SCOPE && !scopes.includes(REQUIRED_SCOPE)) {
           return reject(
             new Error(
-              `Missing required Okta scope '${REQUIRED_SCOPE}'. Token scopes: ${scopes.join(', ')}`
+              `Missing required OAuth scope '${REQUIRED_SCOPE}'. Token scopes: ${scopes.join(', ')}`
             )
           );
         }
