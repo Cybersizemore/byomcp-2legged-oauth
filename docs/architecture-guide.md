@@ -10,8 +10,6 @@
 
 This document evaluates architectural options for enabling **Bring Your Own Model Context Protocol (BYO-MCP)** within **Gemini Enterprise (GE)** and **Cloud Code / Developer IDEs** for Enterprise.
 
-Enterprise currently operates an internal authentication proxy on Cloud Run that performs dynamic token exchange, ensuring that sensitive enterprise credentials and on-prem user tokens are never persisted in developer harnesses, client runtimes, or external AI platforms.
-
 Standard Gemini Enterprise BYO-MCP architecture expects enterprise administrators to register static OAuth 2.0 Web Client credentials (`client_id`, `client_secret`) and store user authorization tokens (access/refresh tokens) within the Google-managed Discovery Engine backend. This conflicts with Enterprise’s enterprise security policies.
 
 This document proposes and contrasts two primary architectural solutions:
