@@ -36,14 +36,9 @@ In the default Gemini Enterprise Custom MCP Connector setup:
 * **Token Storage:** Gemini Enterprise backend (`vertexaisearch.cloud.google.com`) stores the resulting `refresh_token` and `access_token` in Google-managed storage to perform automated refreshes and attach `Authorization: Bearer <token>` to outbound tool calls.
 * **Conflict with Enterprise Policy:** Enterprise does not permit external SaaS storage of internal OAuth client secrets or on-prem user tokens.
 
-### 3.2 Enterprise Existing Cloud Run Proxy Flow
-* Enterprise utilizes an internal proxy deployed on Cloud Run.
-* When a user logs in, the proxy mediates the token exchange with Enterprise's internal IdP/STS.
-* Client runtimes (IDE / Cloud Code) interact with the proxy without local or backend credential caching.
-
 ---
 
-## 4. Option 1: Customer-Managed Cloud Run Proxy via Agent Gateway & PSC
+## 4. Customer-Managed Cloud Run Proxy via Agent Gateway & PSC
 
 ### 4.1 Architecture Overview
 In this pattern, Gemini Enterprise routes all tool interactions through **Agent Gateway** configured in `AGENT_TO_ANYWHERE` egress mode. The target destination is a private Google Cloud VPC reachable via **Private Service Connect (PSC)**.
