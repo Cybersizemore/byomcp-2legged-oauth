@@ -13,8 +13,7 @@ This document evaluates architectural options for enabling **Bring Your Own Mode
 Standard Gemini Enterprise BYO-MCP architecture expects enterprise administrators to register static OAuth 2.0 Web Client credentials (`client_id`, `client_secret`) and store user authorization tokens (access/refresh tokens) within the Google-managed Discovery Engine backend. This conflicts with Enterprise’s enterprise security policies.
 
 This document proposes and contrasts two primary architectural solutions:
-1. **Option 1 (Proxy-Mediated PSC Architecture - Recommended Near-Term):** Deploy Enterprise’s Cloud Run Proxy as a private endpoint behind Google Cloud **Private Service Connect (PSC)** and **Agent Gateway**. Gemini Enterprise connects in a "No-Auth" / identity-propagating egress mode; the proxy intercepts the MCP payload, performs real-time token exchange against Enterprise’s Security Token Service (STS) / Identity Provider (IdP), and forwards authorized MCP JSON-RPC calls (`initialize`, `tools/list`, `tools/call`) to Enterprise's private MCP servers.
-2. **Option 2 (Agent Gateway + Agent Identity Auth Manager):** Leverage native Google Cloud Agent Platform integration where Agent Gateway and Auth Manager mediate the token exchange lifecycle without raw credentials exposed to the agent runtime.
+1. **Option 1 (Proxy-Mediated PSC Architecture - Recommended Near-Term):** Deploy Cloud Run Proxy as a private endpoint behind Google Cloud **Private Service Connect (PSC)** and **Agent Gateway**. Gemini Enterprise connects in a "No-Auth" / identity-propagating egress mode; the proxy intercepts the MCP payload, performs real-time token exchange against an external Security Token Service (STS) / Identity Provider (IdP), and forwards authorized MCP JSON-RPC calls (`initialize`, `tools/list`, `tools/call`) to Enterprise's private MCP servers.
 
 ---
 
