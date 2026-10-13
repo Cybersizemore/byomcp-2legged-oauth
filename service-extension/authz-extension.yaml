@@ -4,6 +4,6 @@ metadata:
   name: enterprise-extproc-ext
   namespace: us-central1
 spec:
-  service: "enterprise-extproc-4r5j2evtkq-uc.a.run.app"
-  authority: "enterprise-extproc-4r5j2evtkq-uc.a.run.app"
+  service: "${EXTPROC_HOST}"
+  authority: "${EXTPROC_HOST}"
   timeout: 1.5s

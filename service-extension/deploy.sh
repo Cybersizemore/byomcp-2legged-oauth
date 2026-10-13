@@ -112,7 +112,8 @@ fi
 # ------------------------------------------------------------------------------
 # 7. Apply AuthzExtension & AuthzPolicy to Agent Gateway
 # ------------------------------------------------------------------------------
-echo "Templating Authz YAML resources..."
+export EXTPROC_HOST=$(gcloud run services describe enterprise-extproc --region="${REGION}" --project="${PROJECT_ID}" --format='value(status.url)' | sed 's|https://||')
+echo "Templating Authz YAML resources for ${EXTPROC_HOST}..."
 envsubst < authz-extension.yaml > authz-extension.resolved.yaml
 envsubst < authz-policy.yaml > authz-policy.resolved.yaml
 
@@ -125,8 +126,8 @@ if curl -s -f -H "Authorization: Bearer $(gcloud auth print-access-token)" \
         -H "Content-Type: application/json" \
         "https://networkservices.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/authzExtensions/${AUTHZ_EXT_NAME}?updateMask=service,authority,timeout" \
         -d "{
-            \"service\": \"enterprise-extproc-4r5j2evtkq-uc.a.run.app\",
-            \"authority\": \"enterprise-extproc-4r5j2evtkq-uc.a.run.app\",
+            \"service\": \"${EXTPROC_HOST}\",
+            \"authority\": \"${EXTPROC_HOST}\",
             \"timeout\": \"1.5s\"
         }" >/dev/null
 else
@@ -135,8 +136,8 @@ else
         -H "Content-Type: application/json" \
         "https://networkservices.googleapis.com/v1/projects/${PROJECT_ID}/locations/${REGION}/authzExtensions?authzExtensionId=${AUTHZ_EXT_NAME}" \
         -d "{
-            \"service\": \"enterprise-extproc-4r5j2evtkq-uc.a.run.app\",
-            \"authority\": \"enterprise-extproc-4r5j2evtkq-uc.a.run.app\",
+            \"service\": \"${EXTPROC_HOST}\",
+            \"authority\": \"${EXTPROC_HOST}\",
             \"timeout\": \"1.5s\"
         }" >/dev/null
 fi
