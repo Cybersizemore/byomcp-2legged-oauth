@@ -12,10 +12,6 @@ A production-grade architectural pattern and reference implementation for integr
 
 ## 🎯 Executive Problem & Objectives
 
-Enterprises in highly regulated sectors often enforce a non-negotiable security requirement:
-
-> **Zero Third-Party Secret Residency:** No customer OAuth `client_id` / `client_secret`s, private keys, or persistent on-premises session tokens may ever be stored or persisted inside external SaaS / Cloud platforms (including Google Cloud / Gemini Enterprise).
-
 ### Standard BYO-MCP vs. The 2-Legged Proxy Pattern
 * **Standard Pattern:** Gemini Enterprise BYO-MCP out-of-the-box expects the cloud to store OAuth client secrets (`client_id`, `client_secret`) and manage upstream authentication tokens.
 * **The 2-Legged Proxy + Downstream MCP Pattern (This Solution):**
