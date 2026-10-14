@@ -117,10 +117,6 @@ byomcp-2legged-oauth/
 │   ├── index.js                    # Verifies OAuth JWT via JWKS & serves Shopping MCP tools
 │   ├── package.json                # Dependencies (express, jsonwebtoken, jwks-rsa)
 │   └── Dockerfile                  # Container definition for Downstream Shopping MCP Server
-├── mock-server/                    # Local-only single-process mock server for offline testing
-│   ├── server.js
-│   ├── package.json
-│   └── Dockerfile
 ├── docs/                           # Detailed architecture & sequence documentation
 │   └── architecture-guide.md       # Comprehensive architectural deep-dive
 └── README.md                       # Main documentation
