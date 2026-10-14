@@ -34,7 +34,6 @@ gcloud services enable \
     run.googleapis.com \
     artifactregistry.googleapis.com \
     discoveryengine.googleapis.com \
-    secretmanager.googleapis.com \
     --project="${PROJECT_ID}"
 
 # ------------------------------------------------------------------------------
